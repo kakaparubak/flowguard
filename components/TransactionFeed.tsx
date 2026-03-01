@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Play, Pause } from 'lucide-react';
 
 interface TransactionData {
   id: string;
@@ -20,11 +20,16 @@ interface TransactionData {
 
 export function TransactionFeed() {
   const [transactions, setTransactions] = useState<TransactionData[]>([]);
+  const [running, setRunning] = useState(false);
   const processingQueue = useRef<Set<string>>(new Set());
 
   useEffect(() => {
+    if (!running) return;
+
+    const abortController = new AbortController();
     const eventSource = new EventSource('/api/sse');
     eventSource.onmessage = async (event) => {
+      if (abortController.signal.aborted) return;
       try {
         const txn = JSON.parse(event.data);
         if (processingQueue.current.has(txn.id)) return;
@@ -35,9 +40,12 @@ export function TransactionFeed() {
         const res = await fetch('/api/process', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(txn)
+          body: JSON.stringify(txn),
+          signal: abortController.signal,
         });
         const result = await res.json();
+
+        if (abortController.signal.aborted) return;
 
         setTransactions(prev => prev.map(t => t.id === txn.id ? { ...t, ...result, status: result.status } : t));
 
@@ -55,18 +63,38 @@ export function TransactionFeed() {
       } catch { }
     };
 
-    return () => eventSource.close();
-  }, []);
+    return () => {
+      abortController.abort();
+      eventSource.close();
+    };
+  }, [running]);
 
   return (
     <Card className="bg-white border-2 border-purple-200 rounded-2xl shadow-[0_8px_30px_-6px_rgba(88,28,135,0.15)] overflow-hidden h-full flex flex-col">
       <CardHeader className="border-b border-purple-100 pb-3">
         <CardTitle className="text-sm font-semibold flex justify-between items-center text-purple-900">
           Real-Time Transaction Feed
-          <span className="flex items-center text-[11px] text-emerald-600 bg-emerald-50 py-1 px-2.5 rounded-full border border-emerald-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
-            LIVE
-          </span>
+          <button
+            onClick={() => setRunning(prev => !prev)}
+            className={`flex items-center text-[11px] py-1 px-2.5 rounded-full border cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 ${running
+              ? 'text-emerald-600 bg-emerald-50 border-emerald-200 hover:bg-emerald-100'
+              : 'text-amber-600 bg-amber-50 border-amber-200 hover:bg-amber-100'
+              }`}
+          >
+            {running ? (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
+                LIVE
+                <Pause className="w-3 h-3 ml-1.5" />
+              </>
+            ) : (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mr-1.5" />
+                PAUSED
+                <Play className="w-3 h-3 ml-1.5" />
+              </>
+            )}
+          </button>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 overflow-auto p-3 pt-3">
