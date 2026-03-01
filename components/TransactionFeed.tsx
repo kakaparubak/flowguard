@@ -4,8 +4,22 @@ import { useEffect, useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 
+interface TransactionData {
+  id: string;
+  bankIssuer: string;
+  amount: number;
+  hour: number;
+  status: string;
+  failure_score: number | string;
+  routedChannel: string;
+  routingReason?: string;
+  retryAttempted?: boolean;
+  timestamp?: number;
+  [key: string]: unknown;
+}
+
 export function TransactionFeed() {
-  const [transactions, setTransactions] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<TransactionData[]>([]);
   const processingQueue = useRef<Set<string>>(new Set());
 
   useEffect(() => {
@@ -38,7 +52,7 @@ export function TransactionFeed() {
             hour: txn.hour,
           }
         }));
-      } catch (err) { }
+      } catch (_err) { }
     };
 
     return () => eventSource.close();

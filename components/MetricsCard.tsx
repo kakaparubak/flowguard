@@ -11,8 +11,8 @@ export function MetricsCard() {
   });
 
   useEffect(() => {
-    const handleTxn = (e: any) => {
-      const { status, amount, isAiRouted } = e.detail;
+    const handleTxn = (e: Event) => {
+      const { status, amount, isAiRouted } = (e as CustomEvent).detail;
       setStats((prev) => {
         const isSuccess = status === "SUCCESS";
         return {

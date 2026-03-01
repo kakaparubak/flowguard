@@ -48,7 +48,7 @@ const callQwen = async (prompt: string): Promise<string | null> => {
   return data.choices?.[0]?.message?.content ?? null;
 };
 
-const extractJson = (content: string): any => {
+const extractJson = (content: string): Record<string, unknown> => {
   const start = content.indexOf("{");
   const end = content.lastIndexOf("}");
   if (start === -1 || end === -1) throw new Error("No JSON found");
@@ -130,13 +130,14 @@ Output ONLY valid JSON:
     const parsed = extractJson(content);
 
     // Validate channel is one of the known list
-    const channel = CHANNELS.includes(parsed.optimal_channel)
-      ? parsed.optimal_channel
+    const rawChannel = String(parsed.optimal_channel ?? "");
+    const channel = CHANNELS.includes(rawChannel as typeof CHANNELS[number])
+      ? rawChannel
       : txn.bankIssuer;
     const failureScore = parseFloat(
-      parseFloat(parsed.failure_score ?? 15).toFixed(1),
+      parseFloat(String(parsed.failure_score ?? 15)).toFixed(1),
     );
-    const reason = parsed.reason ?? "Qwen routing decision";
+    const reason = String(parsed.reason ?? "Qwen routing decision");
 
     console.log(
       `[QWEN ROUTING] ${txn.id} | ${txn.bankIssuer} → ${channel} | Score: ${failureScore} | ${reason}`,

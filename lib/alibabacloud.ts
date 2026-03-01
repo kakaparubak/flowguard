@@ -9,7 +9,7 @@ export const logDecision = async ({
   txn: Transaction;
   failureScore: number;
   channel: string;
-  result: any;
+  result: { status: string };
 }) => {
   console.log(`[ALIBABA CLOUD] Logging Decision:
   Txn ID: ${txn.id}

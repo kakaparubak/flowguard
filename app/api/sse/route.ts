@@ -4,12 +4,12 @@ export async function GET() {
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
-      const sendEvent = (data: any) => {
+      const sendEvent = (data: Record<string, unknown>) => {
         try {
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify(data)}\n\n`),
           );
-        } catch (e) {
+        } catch (_e) {
           clearInterval(interval);
         }
       };
