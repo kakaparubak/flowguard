@@ -1,103 +1,69 @@
-import Image from "next/image";
+import { TransactionFeed } from '@/components/TransactionFeed';
+import { ChannelGauges } from '@/components/ChannelGauges';
+import { FailureHeatmap } from '@/components/FailureHeatmap';
+import { MetricsCard } from '@/components/MetricsCard';
 
-export default function Home() {
+export default function DashboardPage() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-violet-100/40 to-purple-100/60 text-foreground p-4 md:p-8 font-sans selection:bg-purple-200">
+      <header className="mb-6 flex justify-between items-end border-b border-purple-200/60 pb-4 max-w-7xl mx-auto">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-purple-950">
+            Flowguard
+          </h1>
+          <p className="text-purple-400 text-[11px] mt-1 uppercase tracking-[0.18em] font-semibold">
+            AI Dynamic Payment Routing
+          </p>
+        </div>
+        <div className="text-right flex space-x-5 items-center">
+          <div className="hidden md:flex flex-col text-[11px] text-purple-400 text-right uppercase tracking-wider gap-0.5">
+            <span className="font-semibold text-purple-900">Qwen AI v2.5</span>
+            <span className="font-semibold text-purple-900">PayLabs v4.8.1 API</span>
+            <span className="font-semibold text-purple-900">Alibaba Serverless Cloud</span>
+          </div>
+          <div className="h-9 w-9 bg-gradient-to-br from-purple-700 to-indigo-900 rounded-xl flex items-center justify-center shadow-lg shadow-purple-300/40">
+            <span className="text-white font-bold text-base">F</span>
+          </div>
+        </div>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <main className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 h-[calc(100vh-140px)] min-h-[700px]">
+          {/* Left Column - Realtime Feed */}
+          <div className="lg:col-span-2 flex flex-col space-y-4 h-full">
+            <div className="shrink-0">
+              <MetricsCard />
+            </div>
+            <div className="flex-1 min-h-[400px]">
+              <TransactionFeed />
+            </div>
+          </div>
+
+          {/* Right Column - Analytics & Heatmap */}
+          <div className="flex flex-col space-y-4 h-full">
+            <div className="shrink-0">
+              <ChannelGauges />
+            </div>
+            <div className="shrink-0">
+              <FailureHeatmap />
+            </div>
+
+            {/* System status block */}
+            <div className="h-auto bg-gradient-to-br from-purple-900 to-indigo-950 border border-purple-700/30 rounded-2xl p-4 flex flex-col text-sm text-purple-100 shadow-[0_8px_30px_-6px_rgba(88,28,135,0.25)]">
+              <h3 className="font-semibold text-white mb-2 flex items-center gap-2 text-sm">
+                <span className="w-5 h-5 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-[10px]">⚡</span>
+                System Status
+              </h3>
+              <p className="text-purple-200 text-xs leading-relaxed">
+                <span className="font-semibold text-white">Smart Routing Engine:</span> Active — predicting failures via Alibaba Qwen.
+              </p>
+              <p className="text-[11px] text-purple-300/70 mt-2 bg-purple-800/30 border border-purple-700/20 p-2 rounded-xl">
+                Live Hackathon simulation. Validating PayLabs + serverless metrics.
+              </p>
+            </div>
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
