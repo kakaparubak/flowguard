@@ -22,8 +22,8 @@ export function ChannelGauges() {
   const [total, setTotal] = useState(WINDOW);
 
   useEffect(() => {
-    const handleTxn = (e: any) => {
-      const channel: string = e.detail?.routedChannel;
+    const handleTxn = (e: Event) => {
+      const channel: string = (e as CustomEvent).detail?.routedChannel;
       if (!channel) return;
       setCounts(prev => ({ ...prev, [channel]: (prev[channel] ?? 0) + 1 }));
       setTotal(prev => prev + 1);

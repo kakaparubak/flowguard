@@ -52,7 +52,7 @@ export function TransactionFeed() {
             hour: txn.hour,
           }
         }));
-      } catch (_err) { }
+      } catch { }
     };
 
     return () => eventSource.close();

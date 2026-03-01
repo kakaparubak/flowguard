@@ -9,7 +9,7 @@ export async function GET() {
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify(data)}\n\n`),
           );
-        } catch (_e) {
+        } catch {
           clearInterval(interval);
         }
       };

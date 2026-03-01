@@ -44,8 +44,8 @@ export function FailureHeatmap() {
   const [seenChannels, setSeenChannels] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    const handleTxn = (e: any) => {
-      const { failure_score, bankIssuer, hour, routedChannel } = e.detail ?? {};
+    const handleTxn = (e: Event) => {
+      const { failure_score, bankIssuer, hour, routedChannel } = (e as CustomEvent).detail ?? {};
       if (typeof failure_score !== 'number' || !bankIssuer || typeof hour !== 'number') return;
 
       const bucket = getHourBucket(hour);
